@@ -73,23 +73,102 @@ QUIZ_PROMPT = SYSTEM_PROMPT + """
 必须输出纯JSON，不要其他文字。comment用纯文本100字内。共8轮。game_over时recommendations含major/reason/score。"""
 
 
-# ── 搜索引擎 ──────────────────────────────────────────────────
+# ── 搜索引擎 v2 ────────────────────────────────────────────────
 def web_search(query, max_results=5):
-    """DDGS 搜索，返回摘要文本"""
+    """智能搜索：查询重写 + 多路合并"""
     try:
         from ddgs import DDGS
-        results = DDGS().text(query, max_results=max_results)
-        if not results:
-            return "未找到相关结果。"
+        import signal
+
+        queries = smart_rewrite(query)
+        all_results = []
+        seen_urls = set()
+
+        for q in queries[:2]:
+            try:
+                results = DDGS().text(q, max_results=max_results)
+                for r in results:
+                    url = r.get("href", "")
+                    if url not in seen_urls:
+                        seen_urls.add(url)
+                        all_results.append(r)
+                if all_results:
+                    break
+            except Exception:
+                continue
+
+        if not all_results:
+            return "未搜到相关信息。"
+
         parts = []
-        for r in results:
+        for r in all_results[:max_results]:
             title = r.get("title", "")
             body = r.get("body", "")
             href = r.get("href", "")
             parts.append(f"【{title}】{body}\n来源: {href}")
         return "\n\n".join(parts)
+
     except Exception as e:
         return f"搜索暂时不可用: {e}"
+
+
+def smart_rewrite(query):
+    """智能查询重写：根据用户意图生成多个精准搜索词"""
+    q = query
+    queries = []
+
+    # 分数+省份 → 精准搜索
+    import re
+    score_match = re.search(r'(\d{2,3})\s*分', q)
+    province_match = re.search(r'(北京|天津|河北|山西|内蒙古|辽宁|吉林|黑龙江|上海|江苏|浙江|安徽|福建|江西|山东|河南|湖北|湖南|广东|广西|海南|重庆|四川|贵州|云南|西藏|陕西|甘肃|青海|宁夏|新疆)', q)
+
+    if score_match and province_match:
+        score = score_match.group(1)
+        prov = province_match.group(1)
+        queries.append(f"{prov}高考{score}分能上什么大学 2025 2026")
+        queries.append(f"{prov}理科{score}分 大学推荐 志愿填报")
+        queries.append(f"高考{score}分 985 211 录取分数线")
+        return queries
+
+    # 大学+专业 → 精准搜索
+    uni_match = None
+    for name in ["清华", "北大", "复旦", "上交", "浙大", "中科大", "南大", "武大", "华科", "中大",
+                 "哈工大", "西交", "同济", "北航", "北理", "南开", "天大", "厦大", "川大", "电子科大",
+                 "北邮", "西电", "南航", "南理", "深大", "杭电", "武理工"]:
+        if name in q:
+            uni_match = name
+            break
+
+    if uni_match:
+        queries.append(f"{uni_match} 录取分数线 就业 2025")
+        queries.append(f"{q} 毕业生去向 就业质量报告")
+        return queries
+
+    # 专业名 → 就业数据
+    for major in ["计算机", "金融", "临床医学", "法学", "电气", "人工智能", "口腔", "护理",
+                  "土木", "建筑", "会计", "软件", "通信", "电子", "机械", "材料", "化学",
+                  "生物", "环境", "药学", "师范", "教育学", "新闻"]:
+        if major in q:
+            queries.append(f"{major}专业 就业率 薪资 2025 毕业生")
+            queries.append(f"{major}专业 大学排名 推荐")
+            break
+
+    # 考研相关
+    if "考研" in q or "读研" in q or "研究生" in q:
+        queries.append(f"{q} 报录比 难度 2025 2026")
+        queries.append(f"考研 选择 学校 专业 建议")
+
+    # 考公相关
+    if "考公" in q or "公务员" in q or "体制内" in q:
+        queries.append(f"考公务员 哪些专业好考 竞争比 2025")
+        queries.append(f"国考 省考 专业限制 岗位")
+
+    # 默认
+    if not queries:
+        queries.append(f"{q} 高考志愿填报 大学专业 2025")
+        queries.append(f"{q} 就业前景 分析")
+
+    return queries
 
 
 # ── 全品类专业数据库 ──────────────────────────────────────────
@@ -296,7 +375,7 @@ def search_and_chat():
     # 构建搜索词
     search_results = ""
     if len(user_message) > 4:
-        queries = _build_search_queries(user_message)
+        queries = smart_rewrite(user_message)
         for q in queries[:2]:
             search_results += f"\n[搜索: {q}]\n{web_search(q, max_results=4)}\n"
 
