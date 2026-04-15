@@ -40,7 +40,7 @@ python app.py
 
 https://zhangyuanjie-sjtu.github.io/html-pages/zhangxuefeng-quiz/
 
-> 线上版是纯静态页面，60+ 专业数据 + 30+ 大学 + 测评，无需 API Key。
+> **在线版局限**：无 AI 对话、无联网搜索，只有本地数据匹配。60+ 专业 + 30+ 大学 + 测评可用，但深度分析和连续对话体验远不如本地版。**强烈建议用本地版。**
 
 ## 环境要求
 
