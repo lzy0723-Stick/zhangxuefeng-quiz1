@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>张雪峰 · 智能志愿百科</title>
-<meta name="description" content="用张雪峰的思维框架分析高考志愿、考研规划和就业方向。职业倾向测评帮你找对方向，38+专业数据库随查随用。">
+<title>华商学院 · 智能志愿百科</title>
+<meta name="description" content="欢迎来到华商学院。">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>峰</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -197,10 +197,10 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
 <div class="app">
 
   <div class="header">
-    <h1>张<em>雪峰</em>说</h1>
+    <h1>华<em>商</em>说</h1>
     <div class="quote">
       「社会就是一个大筛子，用学历筛孩子，用房子筛父母，用工作筛家庭。」
-      <span class="by">—— 张雪峰，黑龙江齐齐哈尔人，考研名师，全网4000万粉丝</span>
+      <span class="by">广州华商</span>
     </div>
   </div>
 
@@ -213,7 +213,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
   <!-- CHAT -->
   <div class="panel active" id="pChat">
     <div class="chat" id="chatBox">
-      <div class="msg"><div class="av ai">峰</div><div class="bub">我跟你说，这个系统<strong>不是闹着玩的</strong>。38+专业就业数据，张雪峰框架帮你分析。<br><br>高考志愿、考研规划、就业方向——随便问，我给你<strong>掰扯明白</strong>。<br><br><span style="color:var(--text-dim);font-size:.78rem">试试下面的问题 ↓</span></div></div>
+      <div class="msg"><div class="av ai">生</div><div class="bub">我跟你说，这个系统<strong>不是闹着玩的</strong>。38+专业就业数据，框架帮你分析。<br><br>高考志愿、考研规划、就业方向——随便问，我给你<strong>掰扯明白</strong>。<br><br><span style="color:var(--text-dim);font-size:.78rem">试试下面的问题 ↓</span></div></div>
       <div class="chips" id="chips">
         <span class="chip" onclick="ask(this)">计算机专业就业前景</span>
         <span class="chip" onclick="ask(this)">双非考研985值不值</span>
@@ -226,7 +226,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
       </div>
     </div>
     <div class="input-bar">
-      <input type="text" id="chatIn" placeholder="问张雪峰任何关于高考/考研/就业的问题..." onkeydown="if(event.key==='Enter')send()">
+      <input type="text" id="chatIn" placeholder="问任何关于高考/考研/就业的问题..." onkeydown="if(event.key==='Enter')send()">
       <button class="send-btn" onclick="send()">SEND</button>
     </div>
   </div>
@@ -239,7 +239,7 @@ body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:1
     </div>
     <div class="prog" id="aDots" style="display:none"></div>
     <div class="chat" id="assChat">
-      <div class="msg"><div class="av ai">峰</div><div class="bub">来做一套<strong>职业倾向测评</strong>。不是考你知道多少，是帮你<strong>找到方向</strong>。<br><br>8个问题，测完我给你推荐专业。</div></div>
+      <div class="msg"><div class="av ai">生</div><div class="bub">来做一套<strong>职业倾向测评</strong>。不是考你知道多少，是帮你<strong>找到方向</strong>。<br><br>8个问题，测完我给你推荐专业。</div></div>
       <div class="chips"><span class="chip" onclick="startAss()">开始测评</span></div>
     </div>
   </div>
